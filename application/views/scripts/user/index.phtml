@@ -1,0 +1,80 @@
+<div id="userDetail" class="container">
+	<h1 class="page-header"><?= $this->translate('Můj účet') ?></h1>
+
+	<div class="row">
+		<!-- Blog Entries Column -->
+		<div class="col-md-8">
+			<div class="row">
+				<div class="col-xs-3">
+					<img src="<?= $this->user->getProfileImage()->getThumbnail('w175h175') ?>?dc=<?= time() ?>" alt="<?= $this->user->getName() ?>" class="img-responsive img-circle img-thumbnail" />
+				</div>
+				<div class="col-xs-9">
+					<h2 class="editable" data-type="text"><?= $this->user->getFirstName() ?> <?= $this->user->getLastName() ?></h2>
+				</div>
+			</div>
+
+			<br /><br />
+
+			<div class="tabbable">
+				<ul class="nav nav-tabs">
+					<li class="active">
+						<a data-toggle="tab" href="#info"><?= $this->translate('O mě') ?></a>
+					</li>
+
+					<li>
+						<a data-toggle="tab" href="#notification"><?= $this->translate('Nastavení upozornění') ?></a>
+					</li>
+				</ul>
+
+				<div class="tab-content">
+					<br /><br />
+					<div id="info" class="tab-content tab-pane fade in active">
+						<?= $this->form ?>
+					</div>
+
+					<div id="notification" class="tab-pane fade">
+						<?= $this->notificationForm ?>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Blog Sidebar Widgets Column -->
+		<div class="col-md-4">
+
+			<!-- Blog Search Well -->
+			<!-- div class="well">
+				<h4>Blog Search</h4>
+				<div class="input-group">
+					<input type="text" class="form-control">
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+					</span>
+				</div>
+			</div -->
+
+			<div class="well">
+				<h4><?= $this->translate('Mé poslední akce') ?></h4>
+				<br />
+				<div class="row">
+					<?php foreach ($this->myActions as $action): ?>
+						<ul class="list-unstyled col-md-6">
+							<li><a href="/<?= $this->translate('akce') . '/' . $action->getActionId() ?>"><?= $action->getTitle() ?></a></li>
+						</ul>
+					<?php endforeach ?>
+				</div>
+			</div>
+
+			<!-- Side Widget Well -->
+			<!-- div class="well">
+				<h4>Side Widget Well</h4>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+			</div-->
+
+		</div>
+
+	</div>
+	<!-- /.row -->
+
+
+</div>

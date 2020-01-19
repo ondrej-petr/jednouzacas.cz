@@ -1,0 +1,142 @@
+<script>
+	var actionId = <?= $this->event->getActionId() ?>
+</script>
+
+<div class="container">
+	<h1>
+		<a href="<?= $this->baseUrl($this->translate('akce') . '/' . $this->event->getActionId()) ?>">
+			<?= $this->event->getAction()->getTitle() ?>
+		</a>
+		<small>#<?= $this->event->getEventNo() ?></small>
+	</h1>
+
+	<p>
+		<?= $this->event->getDescription() ?>
+	</p>
+
+	<div class="tabbable">
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a data-toggle="tab" href="#terms"><?= $this->translate('Termíny') ?></a>
+			</li>
+
+			<li>
+				<a data-toggle="tab" href="#discussion"><?= $this->translate('Diskuze') ?></a>
+			</li>
+
+			<li>
+				<a data-toggle="tab" href="#gallery"><?= $this->translate('Galerie') ?></a>
+			</li>
+
+			<?php if ($this->canEditEvent): ?>
+			<li>
+				<a data-toggle="tab" href="#edit"><?= $this->translate('Upravit') ?></a>
+			</li>
+			<?php endif ?>
+		</ul>
+
+		<div class="tab-content">
+			<div id="terms" class="tab-content tab-pane fade in active">
+				<?php if (count($this->votes)): ?>
+				<div id="proposalsGrid" data-foldable="<?= !$this->event->isPast() ?>">
+					<table class="table table-condensed table-responsive" data-provides="rowlink">
+						<thead>
+							<tr>
+								<th>Účastník</th>
+
+								<?php $i = 0; ?>
+								<?php foreach ($this->event->getProposals() as $proposal): ?>
+									<th class="col-<?= $i++ ?>"
+										data-userid="<?= $proposal->getUserId() ?>"
+										data-proposalid="<?= $proposal->getProposalId() ?>"
+										data-time="<?= $proposal->getStartDateTime('Y-m-d 23:59:59') ?>">
+										<?= $this->proposalDate($proposal->getDate()) ?>
+									</th>
+								<?php endforeach ?>
+							</tr>
+						</thead>
+
+						<tbody>
+						<?= $this->partialLoop('event/partials/proposal.phtml', $this->votes) ?>
+						</tbody>
+					</table>
+				</div>
+				<?php else: ?>
+				<p>
+					Dosud nebyl navrhnut žádný termín, buď první...
+				</p>
+				<?php endif ?>
+
+				<?php if (!$this->event->getIsClosed() || $this->canEditEvent): ?>
+				<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#newProposalBlock">
+					<?= $this->translate('Přidat nový návrh termínu') ?>
+				</button>
+
+				<div id="newProposalBlock" class="collapse">
+					<h4>Přidání nového návrhu termínu</h4>
+					<?= $this->proposalForm ?>
+				</div>
+				<?php endif ?>
+			</div>
+
+			<div id="discussion" class="tab-pane fade">
+				<br />
+				<?= $this->discussionForm ?>
+
+				<?= $this->partialLoop('event/partials/comment.phtml', $this->discussion) ?>
+			</div>
+
+			<div id="gallery" class="tab-pane fade">
+				<h4>Nahraj novou fotku z této události</h4>
+				<?= $this->galleryForm ?>
+
+				<br />
+
+				<div id="blueimp-gallery" class="blueimp-gallery">
+					<div class="slides"></div>
+					<h3 class="title"></h3>
+					<a class="prev">‹</a>
+					<a class="next">›</a>
+					<a class="close">×</a>
+					<a class="play-pause"></a>
+					<ol class="indicator"></ol>
+				</div>
+
+				<div id="blueimpThumbs">
+					<?php foreach ($this->event->getGallery() as $image): ?>
+					<a href="<?= $image->getThumbnail('h600') ?>" title="<?= basename($image->getFilename()) ?>" data-gallery>
+						<img src="<?= $image->getThumbnail('w150h150') ?>" alt="<?= $image->getFilename() ?>"/>
+					</a>
+					<?php endforeach ?>
+				</div>
+			</div>
+
+			<?php if ($this->canEditEvent): ?>
+			<div id="edit" class="tab-pane fade">
+				<br />
+				<?= $this->eventForm ?>
+			</div>
+			<?php endif ?>
+
+		</div>
+	</div>
+</div>
+
+<div id="removeCommentModal" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Opravdu chceš tento komentář smazat?</h4>
+			</div>
+			<div class="modal-body">
+				<p>Pokud ano, tak hurá do toto :)</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+				<button type="button" class="btn btn-primary">Smazat</button>
+			</div>
+		</div>
+	</div>
+</div>
+

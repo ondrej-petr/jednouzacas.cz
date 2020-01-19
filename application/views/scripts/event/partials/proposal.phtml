@@ -1,0 +1,74 @@
+<tr <?= isset($this->chooseWinner) ? 'id="chooseWinner"' : ((!isset($this->user) ? 'id="winningProposal"' : ((isset($this->changeable) && $this->changeable) ? 'id="mineRow"' : ''))) ?>>
+	<td>
+		<?php if (isset($this->user) && is_object($this->user)): ?>
+			<?php if ($this->changeable): ?>já (<?php endif ?>
+
+			<?php if (!$this->user->getIsAnonym()): ?>
+				<a href="<?= $this->baseUrl($this->changeable
+						? 'moje'
+						: ($this->translate('uzivatel') . '/' . rawurlencode(OPLib_EasyCrypt::encrypt($this->user->getUserId(), 'aes128')))) ?>">
+					<?= $this->user->getName() ?>
+				</a>
+			<?php else: ?>
+				<?php if ($this->changeable): ?>
+					<a href="#" data-type="text" data-name="anonymName" data-pk="<?= $this->user->getUserId() ?>" class="editable editable-click">
+				<?php endif ?>
+					<?= $this->user->getName() ?>
+				<?php if ($this->changeable): ?>
+					</a>
+					<i class="fa fa-pencil editable-i"></i>
+				<?php endif ?>
+			<?php endif ?>
+
+			<?php if ($this->changeable): ?>)<?php endif ?>
+		<?php elseif (isset($this->chooseWinner) && !isset($this->chosen)): ?>
+			<i><?= $this->translate('vyber vítězný termín') ?></i>
+		<?php else: ?>
+
+		<?php endif ?>
+	</td>
+
+	<?php $i = 0;?>
+	<?php foreach ($this->partialLoop()->view->event->getProposals() as $key => $proposal): ?>
+		<?php if (!isset($this->chooseWinner)): ?>
+			<?php if (!isset($this->votes[$key]) || $this->votes[$key] instanceof App_Model_Vote): ?>
+				<?php
+					$voted = isset($this->votes[$key]) ? $this->votes[$key]->getVote() : null;
+					switch ($voted) {
+						case '0':
+							$state = '';
+							break;
+						case '1':
+							$state = 'readonly';
+							break;
+						case '2':
+							$state = 'checked';
+							break;
+						default:
+							$state = 'required';
+							break;
+					}
+					// $userId = isset($this->votes[$key]) ? $this->votes[$key]->getUserId() : null;
+					$userId = $this->user->getUserId();
+				?>
+				<td class="col-<?= $i++ ?> <?php if ($this->changeable): ?>changeable <?php endif ?>" data-userid="<?= $userId ?>" data-proposalid="<?= $proposal->getProposalId() ?>">
+					<div class="checkbox checkbox-awesome checkbox-primary indeterminate-checkbox">
+						<input type="checkbox" class="styled styled-primary" <?= $state ?> <?= !$this->changeable ? 'disabled' : '' ?> />
+						<label></label>
+					</div>
+				</td>
+			<?php elseif (is_bool($this->votes[$key])): ?>
+				<td class="col-<?= $i++ ?> text-center">
+					<?= $this->votes[$key] === true ? '<i>vedoucí návrh</i>' : '' ?>
+				</td>
+			<?php endif ?>
+		<?php else: ?>
+			<td class="col-<?= $i++ ?> <?php if ($this->changeable): ?>changeable<?php endif ?>" data-proposalid="<?= $proposal->getProposalId() ?>">
+				<div class="radio checkbox-awesome checkbox-success">
+					<input type="radio" name="choose-winner" <?php if ($this->chosen == $proposal->getProposalId()): ?>checked<?php endif ?> value="<?= $proposal->getProposalId() ?>" />
+					<label></label>
+				</div>
+			</td>
+		<?php endif ?>
+	<?php endforeach ?>
+</tr>

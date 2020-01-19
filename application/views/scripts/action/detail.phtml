@@ -1,0 +1,107 @@
+<div class="container">
+	<h1 class="page-header"><?= $this->action->getTitle() ?></h1>
+
+	<p>
+		<?= $this->action->getDescription() ?>
+	</p>
+
+	<div class="tabbable">
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a data-toggle="tab" href="#events"><?= $this->translate('Události') ?></a>
+			</li>
+
+			<li>
+				<a data-toggle="tab" href="#users"><?= $this->translate('Účastníci') ?></a>
+			</li>
+
+			<?php if ($this->userIsAdmin): ?>
+			<li>
+				<a data-toggle="tab" href="#edit"><?= $this->translate('Upravit') ?></a>
+			</li>
+			<?php endif ?>
+		</ul>
+
+		<div class="tab-content">
+			<div id="events" class="tab-content tab-pane fade in active">
+				<table class="table table-condensed" data-provides="rowlink">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th></th>
+							<th>Datum</th>
+							<th>Místo</th>
+						</tr>
+					</thead>
+
+					<tbody data-link="row" class="rowlink">
+					<?= $this->partialLoop('action/partials/event.phtml', $this->events) ?>
+					</tbody>
+				</table>
+
+				<button type="button" class="btn btn-primary" data-toggle="<?= $this->allowCreateNewEvent ? 'collapse' : 'modal' ?>" data-target="#newEventBlock">
+					<?= $this->translate('Přidat novou událost') ?>
+				</button>
+
+				<?php if ($this->allowCreateNewEvent): ?>
+					<div id="newEventBlock" class="collapse">
+						<h4>Přidání nové události</h4>
+						<?= $this->eventForm ?>
+					</div>
+				<?php else: ?>
+					<div class="modal fade" id="newEventBlock" tabindex="-1" role="dialog">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title" id="myModalLabel"><?= $this->translate('Není možné přidat novou událost') ?></h4>
+								</div>
+								<div class="modal-body">
+									<p>
+										Jedna neproběhlá událost stále existuje. Pokud se nekonala a všechny její
+										návrhy termímů jsou v minulosti, přidej nějaký nový.
+									</p>
+									<p>
+										Pokud bys přece jen chtěl(a) vytvořit novou událost, je zapotřebí tu stávající
+										nejdříve zrušit. To může udělat pouze administrátor akce nebo ten, kdo událost
+										založil.
+									</p>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				<?php endif ?>
+			</div>
+
+			<div id="users" class="tab-pane fade">
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Jméno</th>
+						</tr>
+					</thead>
+
+					<tbody>
+					<?= $this->partialLoop('action/partials/user.phtml', $this->action->getAllUsers(false)) ?>
+					</tbody>
+				</table>
+
+				<div>
+					<h4>Pozvi někoho dalšího</h4>
+					<?= $this->invitationForm ?>
+				</div>
+			</div>
+
+			<?php if ($this->userIsAdmin): ?>
+			<div id="edit" class="tab-pane fade">
+				<br />
+				<?= $this->actionForm ?>
+			</div>
+			<?php endif ?>
+
+		</div>
+	</div>
+</div>

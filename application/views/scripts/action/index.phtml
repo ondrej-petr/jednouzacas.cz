@@ -1,0 +1,86 @@
+<div class="container">
+	<h1 class="page-header">Akce</h1>
+
+	<div class="tabbable">
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a data-toggle="tab" href="#private">Moje akce</a>
+			</li>
+			<li>
+				<a data-toggle="tab" href="#public">Veřejné akce</a>
+			</li>
+			<li>
+				<a data-toggle="tab" href="#calend">Kalendář</a>
+			</li>
+		</ul>
+
+		<div class="tab-content">
+			<div id="private" class="tab-content tab-pane fade in active">
+				<?php if (count($this->myActions)): ?>
+				<table class="table table-condensed table-striped">
+					<thead>
+						<tr>
+							<th class="hidden">#</th>
+							<th></th>
+							<th>Akce</th>
+							<th>Příští událost</th>
+							<th>Poslední událost</th>
+							<th></th>
+						</tr>
+					</thead>
+
+					<tbody data-link="row" class="rowlink">
+					<?= $this->partialLoop('action/partials/action.phtml', $this->myActions) ?>
+					</tbody>
+				</table>
+				<?php else: ?>
+				<div>Nemáté žádné akce</div>
+				<?php endif ?>
+			</div>
+			<div id="public" class="tab-pane fade">
+				<?php if (count($this->publicActions)): ?>
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Akce</th>
+							<th>Příští událost</th>
+							<th>Poslední událost</th>
+							<th></th>
+						</tr>
+					</thead>
+
+					<tbody>
+					<?= $this->partialLoop('action/partials/action.phtml', $this->publicActions) ?>
+					</tbody>
+				</table>
+				<?php else: ?>
+				<div>Nenalezeny žádné veřejné akce</div>
+				<?php endif ?>
+			</div>
+
+			<div id="calend" class="tab-pane fade">
+				<br />
+				<div id='calendar'></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="removeActionModal" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Opravdu se chceš z této akce odhlásit</h4>
+			</div>
+			<div class="modal-body">
+				<p>Pokud ano, k akci <b></b> se už nedostaneš. Leda, že by tě zase někdo pozval...</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+				<button type="button" class="btn btn-primary">Odhlásit se</button>
+			</div>
+		</div>
+	</div>
+</div>

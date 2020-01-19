@@ -1,0 +1,49 @@
+<?php
+
+if (!isset($this->partialLoop()->background)) {
+	$this->partialLoop()->background = array();
+}
+
+$img = $this->model->getUser()->getProfileImage();
+if (!isset($this->partialLoop()->background[$this->model->getUser()->getUserId()])) {
+	list($red, $green, $blue) = array(150, 200, 200);
+	if ($img->getFilename()) {
+		$this->partialLoop()->background[$this->model->getUser()->getUserId()] = $img->getDominantColor();
+	}
+}
+extract($this->partialLoop()->background[$this->model->getUser()->getUserId()]);
+
+$user = Zend_Registry::get('user');
+
+?>
+
+<div class="col-xs-12">
+	<div id="comment<?= $this->model->getDiscussionId() ?>" class="comment row" style="background-color: rgba(<?= $red ?>, <?= $green ?>, <?= $blue ?>, 0.3)">
+		<div class="col-sm-3 col-xs-4">
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<?php if ($img->getFilename()): ?>
+					<img src="<?= $img->getThumbnail('w100h100') ?>"  alt="<?= $this->model->getUser()->getName() ?>" class="img-responsive img-circle img-thumbnail" />
+					<?php endif ?>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<div><b><?= $this->model->getUser()->getName() ?></b></div>
+					<div><i><?= $this->model->getDate() ?></i></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9 col-xs-8">
+			<?= $this->hyperlink($this->model->getText()) ?>
+			<?php if ($user->getUserId() == $this->model->getUserId()): ?>
+				<i class="fa fa-times"
+					style="color: rgb(<?= $red ?>, <?= $green ?>, <?= $blue ?>)"
+					title="smazat komentář"
+					aria-hidden="true"
+					data-toggle="modal"
+					data-target="#removeCommentModal"
+					data-comment-id="<?= $this->model->getDiscussionId() ?>">
+				</i>
+			<?php endif ?>
+		</div>
+	</div>
+</div>
